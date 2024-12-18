@@ -1,12 +1,14 @@
-package com.services;
+package com.ServicePatient.GestionDePatients.services;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.entities.Patient;
-import com.repository.PatientRepository;
+import com.ServicePatient.GestionDePatients.entities.Patient;
+import com.ServicePatient.GestionDePatients.repository.PatientRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ServicePatientImp implements ServicePatient{
@@ -33,14 +35,25 @@ public class ServicePatientImp implements ServicePatient{
     }
 
     @Override
-    public Patient getPatient(String nom) {
-        return patientRepository.findByNom(nom);
+    public Patient getPatientByNom(String nom) {
+        return patientRepository.findByNomComplet(nom);
     }
 
     @Override
     public List<Patient> getAllPatient() {
         return patientRepository.findAll();
     }
-  
+
+    @Override
+    public Patient getPatientById(Long idPatient) {
+        return patientRepository.findById(idPatient)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Patient not found"));
+    }
+
+    @Override
+    public Boolean checkPatient(Long idPatient) {
+        return patientRepository.existsById(idPatient);
+    }
+
 
 }
